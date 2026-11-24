@@ -1,0 +1,13 @@
+/* Legacy Paper Design Tokens */
+:root {
+  --brand-ground: #F6F1E7;     /* Tactile warm paper ground */
+  --brand-surface: #EDE5D5;    /* Parchment panel */
+  --brand-ink: #1C1B19;        /* Fountain-pen carbon black */
+  --brand-ink-muted: #57534E;  /* Stone charcoal text */
+  --brand-accent: #B23A2E;     /* Wax seal vermilion red */
+  --brand-accent-glow: #DC2626;/* Crimson highlight */
+  --brand-deep: #292524;       /* Deep warm dark */
+  --brand-border: #D6CEBE;     /* Paper edge border */
+  --brand-head-font: "Poppins", Georgia, serif;
+  --brand-body-font: "Poppins", system-ui, sans-serif;
+}

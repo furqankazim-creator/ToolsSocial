@@ -1,0 +1,13 @@
+/* CreativeDady Design Tokens */
+:root {
+  --brand-ground: #0D0F14;     /* Deep studio obsidian */
+  --brand-surface: #141822;    /* Card and panel background */
+  --brand-ink: #F3F4F6;        /* High-contrast crisp text */
+  --brand-ink-muted: #94A3B8;  /* Secondary text */
+  --brand-accent: #6366F1;     /* Electric Indigo */
+  --brand-accent-glow: #8B5CF6;/* Violet illumination */
+  --brand-cyan: #06B6D4;       /* Telemetry cyan */
+  --brand-border: #1E293B;     /* Structural borders */
+  --brand-head-font: "Poppins", -apple-system, sans-serif;
+  --brand-body-font: "Poppins", -apple-system, sans-serif;
+}

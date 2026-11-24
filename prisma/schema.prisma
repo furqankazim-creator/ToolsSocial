@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PlatformType {
+  LINKEDIN
+  TWITTER
+  INSTAGRAM
+  BLUESKY
+  REDDIT
+}
+
+enum PostStatus {
+  DRAFT
+  NEEDS_REVIEW
+  APPROVED
+  SCHEDULED
+  PUBLISHED
+  FAILED
+}
+
+model Workspace {
+  id               String             @id @default(uuid())
+  name             String
+  brandDna         BrandDna?
+  connectedAccounts ConnectedAccount[]
+  campaigns        Campaign[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+}
+
+model BrandDna {
+  id             String    @id @default(uuid())
+  workspaceId    String    @unique
+  workspace      Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  voiceTone      String    @default("Direct, contrarian, data-driven, authentic founder perspective")
+  targetAudience String    @default("Tech founders, AI engineers, growth builders")
+  examplePosts   String[]  @default([])
+  bannedWords    String[]  @default(["delve", "game-changer", "unlock", "in today's fast-paced world", "tapestry", "elevate", "revolutionize", "let's dive in"])
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model ConnectedAccount {
+  id            String       @id @default(uuid())
+  workspaceId   String
+  workspace     Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  platform      PlatformType
+  accountName   String
+  accountHandle String
+  avatarUrl     String?
+  accessToken   String
+  refreshToken  String?
+  expiresAt     DateTime?
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+}
+
+model Campaign {
+  id              String      @id @default(uuid())
+  workspaceId     String
+  workspace       Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  title           String
+  goal            String
+  detectedSubject String?
+  brandVibe       String?
+  visualHooks     String[]    @default([])
+  searchQueries   String[]    @default([])
+  imageUrls       String[]    @default([])
+  posts           Post[]
+  status          String      @default("ACTIVE")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model Post {
+  id                   String          @id @default(uuid())
+  campaignId           String
+  campaign             Campaign        @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  dayNumber            Int
+  angleType            String          // e.g. "Contrarian Hook", "BTS Breakdown", "Data/Trend Insight"
+  coreThesis           String
+  status               PostStatus      @default(NEEDS_REVIEW)
+  scheduledTimeUtc     DateTime
+  hasCarousel          Boolean         @default(false)
+  uploadedImageIndex   Int?
+  mediaUrls            String[]        @default([])
+  firstComment         String?
+  firstCommentDelayMin Int             @default(2)
+  firstCommentPublished Boolean        @default(false)
+  platformPosts        PlatformPost[]
+  carouselSlides       CarouselSlide[]
+  publishedAt          DateTime?
+  publishedUrls        Json?           // { linkedin: "...", twitter: "...", instagram: "..." }
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+}
+
+model PlatformPost {
+  id            String       @id @default(uuid())
+  postId        String
+  post          Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
+  platform      PlatformType
+  content       String       // LinkedIn body or Instagram caption or primary tweet
+  threadItems   String[]     @default([]) // For X multi-tweet threads
+  firstComment  String?
+  qualityScore  Float        @default(9.0)
+  criticNotes   String?
+  createdAt     DateTime     @default(now())
+}
+
+model CarouselSlide {
+  id          String   @id @default(uuid())
+  postId      String
+  post        Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  slideNumber Int
+  headline    String
+  subtext     String
+  bgTheme     String   @default("gradient-purple")
+  renderedPng String?
+  createdAt   DateTime @default(now())
+}
